@@ -1,0 +1,30 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 22
+    commands:
+      - echo "Installation des dépendances..."
+      - npm ci
+  pre_build:
+    commands:
+      - echo "Création du fichier .env"
+      - printf "VITE_API_URL=%s\n" "${API_URL}"       >> .env
+      - printf "VITE_AUTH_BASE_URL=%s\n" "${AUTH_BASE_URL}" >> .env
+      - echo "Contenu .env :"
+      - cat .env
+  build:
+    commands:
+      - echo "Construction de l'application..."
+      - npm run build
+  post_build:
+    commands:
+      - echo "Déploiement sur S3..."
+      - aws s3 rm "s3://${BUCKET_NAME}" --recursive
+      - aws s3 cp ./dist "s3://${BUCKET_NAME}" --recursive
+
+artifacts:
+  files:
+    - '**/*'
+  base-directory: dist
