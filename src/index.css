@@ -658,6 +658,125 @@ select:focus-visible {
   background: var(--color-text-muted);
 }
 
+/* Styles pour checkbox personnalisée */
+.checkbox-container {
+  display: flex !important;
+  align-items: center;
+  gap: var(--spacing-md);
+  cursor: pointer;
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius);
+  transition: var(--transition);
+  background-color: var(--color-border-light);
+  border: 2px solid transparent;
+  margin-bottom: 0 !important;
+}
+
+.checkbox-container:hover {
+  background-color: var(--color-primary-light);
+  border-color: var(--color-primary);
+}
+
+.checkbox-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.checkbox-custom {
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--color-border);
+  border-radius: var(--border-radius-sm);
+  background-color: var(--color-bg-card);
+  position: relative;
+  transition: var(--transition);
+  flex-shrink: 0;
+}
+
+.checkbox-input:checked + .checkbox-custom {
+  background-color: var(--color-success);
+  border-color: var(--color-success);
+}
+
+.checkbox-input:checked + .checkbox-custom::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-weight: bold;
+  font-size: 0.875rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.status-icon {
+  font-size: 1.25rem;
+}
+
+/* Styles pour la modal de confirmation */
+.confirm-modal {
+  max-width: 450px;
+}
+
+.danger-icon {
+  background: linear-gradient(135deg, #ffebee, #ffcdd2);
+  color: var(--color-danger);
+}
+
+.confirm-message {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background-color: var(--color-border-light);
+  border-radius: var(--border-radius);
+  margin-bottom: var(--spacing-lg);
+}
+
+.message-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.confirm-message p {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+.confirm-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+  border-radius: var(--border-radius);
+  border-left: 4px solid var(--color-warning);
+  margin-bottom: var(--spacing-lg);
+}
+
+.warning-icon {
+  font-size: 1.125rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.confirm-warning span {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+}
+
 .toast {
   position: fixed;
   bottom: var(--spacing-lg);
@@ -1017,5 +1136,18 @@ select:focus-visible {
   .modal-actions {
     flex-direction: column-reverse;
     gap: var(--spacing-sm);
+  }
+
+  .checkbox-container {
+    padding: var(--spacing-sm);
+  }
+
+  .confirm-message,
+  .confirm-warning {
+    padding: var(--spacing-sm);
+  }
+
+  .message-icon {
+    font-size: 1.25rem;
   }
 }

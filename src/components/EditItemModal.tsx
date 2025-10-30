@@ -65,35 +65,54 @@ export function EditItemModal({ item, onClose, onSave }: EditItemModalProps) {
     onSave(item._id, data);
   };
 
-  return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <h2>Modifier {item.name}</h2>
+  const handleOverlayClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
 
-        <form onSubmit={handleSubmit}>
+  return (
+    <div className="modal-overlay" onClick={handleOverlayClick}>
+      <div className="modal">
+        <div className="modal-header">
+          <div className="modal-header-content">
+            <div className="modal-icon">✏️</div>
+            <div>
+              <h3>Modifier l'article</h3>
+              <p className="modal-subtitle">{item.name}</p>
+            </div>
+          </div>
+          <button 
+            onClick={onClose} 
+            className="modal-close"
+            aria-label="Fermer"
+          >
+            ×
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="modal-content">
           <div className="form-group">
             <label>Type de quantité</label>
-            <div className="radio-group">
-              <label>
-                <input
-                  type="radio"
-                  name="quantityType"
-                  value="quantity"
-                  checked={quantityType === 'quantity'}
-                  onChange={() => setQuantityType('quantity')}
-                />
-                Quantité
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  name="quantityType"
-                  value="weight"
-                  checked={quantityType === 'weight'}
-                  onChange={() => setQuantityType('weight')}
-                />
-                Poids
-              </label>
+            <div className="toggle-container">
+              <div className="toggle-group">
+                <button
+                  type="button"
+                  className={`toggle-option ${quantityType === 'quantity' ? 'active' : ''}`}
+                  onClick={() => setQuantityType('quantity')}
+                >
+                  <span className="toggle-icon">🔢</span>
+                  <span className="toggle-text">Quantité</span>
+                </button>
+                <button
+                  type="button"
+                  className={`toggle-option ${quantityType === 'weight' ? 'active' : ''}`}
+                  onClick={() => setQuantityType('weight')}
+                >
+                  <span className="toggle-icon">⚖️</span>
+                  <span className="toggle-text">Poids</span>
+                </button>
+              </div>
             </div>
           </div>
 
@@ -154,21 +173,31 @@ export function EditItemModal({ item, onClose, onSave }: EditItemModalProps) {
           )}
 
           <div className="form-group">
-            <label>
+            <label className="checkbox-container">
               <input
                 type="checkbox"
                 checked={purchased}
                 onChange={(e) => setPurchased(e.target.checked)}
+                className="checkbox-input"
               />
-              Acheté
+              <span className="checkbox-custom"></span>
+              <span className="checkbox-label">
+                <span className="status-icon">{purchased ? '✅' : '🛒'}</span>
+                {purchased ? 'Article acheté' : 'À acheter'}
+              </span>
             </label>
           </div>
 
           <div className="modal-actions">
-            <button type="button" onClick={onClose} className="btn btn-secondary">
+            <button 
+              type="button" 
+              onClick={onClose} 
+              className="btn btn-secondary"
+            >
               Annuler
             </button>
             <button type="submit" className="btn btn-primary">
+              <span>💾</span>
               Enregistrer
             </button>
           </div>
