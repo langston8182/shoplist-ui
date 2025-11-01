@@ -26,6 +26,7 @@ export function ListDetailPage() {
   const [editItem, setEditItem] = useState<Item | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [showNewItemModal, setShowNewItemModal] = useState(false);
+  const [showDeleteAllConfirm, setShowDeleteAllConfirm] = useState(false);
   const [toast, setToast] = useState<{
     message: string;
     type: 'success' | 'error';
@@ -124,7 +125,6 @@ export function ListDetailPage() {
       await apiClient.deleteItem(listId, itemId);
       setItems(items.filter((item) => item._id !== itemId));
       setTotalItems(totalItems - 1);
-      setDeleteConfirm(null);
       setToast({ message: 'Article supprimé', type: 'success' });
     } catch (error) {
       setToast({
@@ -132,12 +132,63 @@ export function ListDetailPage() {
           error instanceof Error ? error.message : 'Erreur de suppression',
         type: 'error',
       });
-      setDeleteConfirm(null);
     }
   };
 
   const handleLogout = () => {
     authService.logout();
+  };
+
+  const handleToggleAllPurchased = async () => {
+    if (!listId) return;
+
+    try {
+      const unpurchasedItems = items.filter(item => !item.purchased);
+      const allPurchased = unpurchasedItems.length === 0;
+      
+      if (allPurchased) {
+        // Tous sont achetés, les remettre à "non acheté"
+        for (const item of items) {
+          await apiClient.updateItem(listId, item._id, { purchased: false });
+        }
+        setItems(items.map(item => ({ ...item, purchased: false })));
+        setToast({ message: 'Tous les articles remis à "non acheté"', type: 'success' });
+      } else {
+        // Il y a des items non achetés, les marquer tous comme achetés
+        for (const item of unpurchasedItems) {
+          await apiClient.updateItem(listId, item._id, { purchased: true });
+        }
+        setItems(items.map(item => ({ ...item, purchased: true })));
+        setToast({ message: `${unpurchasedItems.length} articles marqués comme achetés`, type: 'success' });
+      }
+    } catch (error) {
+      setToast({
+        message: error instanceof Error ? error.message : 'Erreur lors de la mise à jour',
+        type: 'error',
+      });
+    }
+  };
+
+  const handleDeleteAllConfirm = async () => {
+    if (!listId) return;
+
+    try {
+      // Supprimer tous les items
+      for (const item of items) {
+        await apiClient.deleteItem(listId, item._id);
+      }
+
+      setItems([]);
+      setTotalItems(0);
+      setShowDeleteAllConfirm(false);
+      setToast({ message: 'Tous les articles ont été supprimés', type: 'success' });
+    } catch (error) {
+      setToast({
+        message: error instanceof Error ? error.message : 'Erreur lors de la suppression',
+        type: 'error',
+      });
+      setShowDeleteAllConfirm(false);
+    }
   };
 
   if (loading) {
@@ -153,12 +204,34 @@ export function ListDetailPage() {
           <div>
             <h2>{listName}</h2>
           </div>
-          <button
-            onClick={() => setShowNewItemModal(true)}
-            className="btn btn-primary"
-          >
-            + Ajouter un article
-          </button>
+          <div className="header-actions-group">
+            {items.length > 0 && (
+              <div className="bulk-actions">
+                <button
+                  onClick={handleToggleAllPurchased}
+                  className="btn btn-small btn-success"
+                  title={items.filter(item => !item.purchased).length === 0 
+                    ? "Tout remettre à non acheté" 
+                    : "Tout marquer comme acheté"}
+                >
+                  {items.filter(item => !item.purchased).length === 0 ? '↩️' : '✅'}
+                </button>
+                <button
+                  onClick={() => setShowDeleteAllConfirm(true)}
+                  className="btn btn-small btn-danger"
+                  title="Tout supprimer"
+                >
+                  🗑️
+                </button>
+              </div>
+            )}
+            <button
+              onClick={() => setShowNewItemModal(true)}
+              className="btn btn-primary"
+            >
+              + Ajouter un article
+            </button>
+          </div>
         </div>
 
         {items.length === 0 ? (
@@ -180,7 +253,7 @@ export function ListDetailPage() {
                     item={item}
                     onTogglePurchased={handleTogglePurchased}
                     onEdit={setEditItem}
-                    onDelete={(id) => setDeleteConfirm(id)}
+                    onDelete={(id) => handleDeleteItem(id)}
                   />
                 ))}
             </div>
@@ -216,6 +289,15 @@ export function ListDetailPage() {
           message="Voulez-vous vraiment supprimer cet article ?"
           onConfirm={() => handleDeleteItem(deleteConfirm)}
           onCancel={() => setDeleteConfirm(null)}
+        />
+      )}
+
+      {showDeleteAllConfirm && (
+        <ConfirmDialog
+          title="Supprimer tous les articles"
+          message={`Voulez-vous vraiment supprimer tous les ${items.length} articles de cette liste ?`}
+          onConfirm={handleDeleteAllConfirm}
+          onCancel={() => setShowDeleteAllConfirm(false)}
         />
       )}
 

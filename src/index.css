@@ -147,6 +147,20 @@ select:focus-visible {
   gap: var(--spacing-lg);
 }
 
+.header-actions-group {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.bulk-actions {
+  display: flex;
+  gap: var(--spacing-xs);
+  padding: 4px;
+  background-color: var(--color-border-light);
+  border-radius: var(--border-radius);
+}
+
 .page-header h2 {
   font-size: 2rem;
   font-weight: 700;
@@ -209,6 +223,15 @@ select:focus-visible {
 
 .btn-danger:hover:not(:disabled) {
   background-color: var(--color-accent-hover);
+}
+
+.btn-success {
+  background-color: var(--color-success);
+  color: white;
+}
+
+.btn-success:hover:not(:disabled) {
+  background-color: #45a049;
 }
 
 .btn-danger-outline {
@@ -1354,6 +1377,15 @@ select:focus-visible {
     font-size: 1.5rem;
   }
 
+  .header-actions-group {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .bulk-actions {
+    order: 2;
+  }
+
   .cards-grid {
     gap: var(--spacing-sm);
   }
@@ -1431,21 +1463,21 @@ select:focus-visible {
 
   .modal-overlay {
     padding: 0;
-    align-items: flex-end;
+    align-items: flex-start;
   }
 
   .modal {
     max-width: 100%;
     width: 100%;
     margin: 0;
-    border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+    border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
     max-height: 90vh;
-    animation: slideUpMobile 0.3s ease-out;
+    animation: slideDownMobile 0.3s ease-out;
   }
 
-  @keyframes slideUpMobile {
+  @keyframes slideDownMobile {
     from {
-      transform: translateY(100%);
+      transform: translateY(-100%);
     }
     to {
       transform: translateY(0);
