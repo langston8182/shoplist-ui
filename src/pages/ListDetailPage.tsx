@@ -151,12 +151,6 @@ export function ListDetailPage() {
       <main className="container">
         <div className="page-header">
           <div>
-            <button
-              onClick={() => navigate('/lists')}
-              className="btn btn-secondary btn-small"
-            >
-              ← Retour aux listes
-            </button>
             <h2>{listName}</h2>
           </div>
           <button

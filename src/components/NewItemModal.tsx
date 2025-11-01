@@ -8,13 +8,10 @@ interface NewItemModalProps {
 
 export function NewItemModal({ onClose, onSave }: NewItemModalProps) {
   const [name, setName] = useState('');
-  const [quantityType, setQuantityType] = useState<'quantity' | 'weight'>(
-    'quantity'
-  );
-  const [quantity, setQuantity] = useState('');
+  const [quantityType, setQuantityType] = useState<'quantity' | 'weight'>('quantity');
+  const [quantity, setQuantity] = useState('1');
   const [weightValue, setWeightValue] = useState('');
   const [weightUnit, setWeightUnit] = useState<Weight['unit']>('g');
-  const [notes, setNotes] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const validate = (): boolean => {
@@ -49,7 +46,6 @@ export function NewItemModal({ onClose, onSave }: NewItemModalProps) {
 
     const data: CreateItemRequest = {
       name: name.trim(),
-      notes: notes.trim() || undefined,
     };
 
     if (quantityType === 'quantity') {
@@ -85,9 +81,8 @@ export function NewItemModal({ onClose, onSave }: NewItemModalProps) {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="modal-content">
+        <form onSubmit={handleSubmit} className="modal-content mobile-form">
           <div className="form-group">
-            <label htmlFor="item-name">Nom de l'article</label>
             <input
               id="item-name"
               type="text"
@@ -96,39 +91,34 @@ export function NewItemModal({ onClose, onSave }: NewItemModalProps) {
                 setName(e.target.value);
                 setErrors((prev) => ({ ...prev, name: '' }));
               }}
-              className={errors.name ? 'input-error' : ''}
+              className={`mobile-input ${errors.name ? 'input-error' : ''}`}
+              placeholder="Nom de l'article"
               autoFocus
             />
             {errors.name && <span className="error-message">{errors.name}</span>}
           </div>
 
           <div className="form-group">
-            <label>Type de quantité</label>
-            <div className="toggle-container">
-              <div className="toggle-group">
-                <button
-                  type="button"
-                  className={`toggle-option ${quantityType === 'quantity' ? 'active' : ''}`}
-                  onClick={() => setQuantityType('quantity')}
-                >
-                  <span className="toggle-icon">🔢</span>
-                  <span className="toggle-text">Quantité</span>
-                </button>
-                <button
-                  type="button"
-                  className={`toggle-option ${quantityType === 'weight' ? 'active' : ''}`}
-                  onClick={() => setQuantityType('weight')}
-                >
-                  <span className="toggle-icon">⚖️</span>
-                  <span className="toggle-text">Poids</span>
-                </button>
-              </div>
+            <div className="quantity-type-selector">
+              <button
+                type="button"
+                className={`type-btn ${quantityType === 'quantity' ? 'active' : ''}`}
+                onClick={() => setQuantityType('quantity')}
+              >
+                Quantité
+              </button>
+              <button
+                type="button"
+                className={`type-btn ${quantityType === 'weight' ? 'active' : ''}`}
+                onClick={() => setQuantityType('weight')}
+              >
+                Poids
+              </button>
             </div>
           </div>
 
           {quantityType === 'quantity' ? (
             <div className="form-group">
-              <label htmlFor="item-quantity">Quantité</label>
               <input
                 id="item-quantity"
                 type="number"
@@ -138,16 +128,16 @@ export function NewItemModal({ onClose, onSave }: NewItemModalProps) {
                   setQuantity(e.target.value);
                   setErrors((prev) => ({ ...prev, quantity: '' }));
                 }}
-                className={errors.quantity ? 'input-error' : ''}
+                className={`mobile-input ${errors.quantity ? 'input-error' : ''}`}
+                placeholder="Quantité"
               />
               {errors.quantity && (
                 <span className="error-message">{errors.quantity}</span>
               )}
             </div>
           ) : (
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="item-weight">Poids</label>
+            <div className="form-group">
+              <div className="weight-input-group">
                 <input
                   id="item-weight"
                   type="number"
@@ -158,18 +148,14 @@ export function NewItemModal({ onClose, onSave }: NewItemModalProps) {
                     setWeightValue(e.target.value);
                     setErrors((prev) => ({ ...prev, weight: '' }));
                   }}
-                  className={errors.weight ? 'input-error' : ''}
+                  className={`mobile-input weight-value ${errors.weight ? 'input-error' : ''}`}
+                  placeholder="Poids"
                 />
-                {errors.weight && (
-                  <span className="error-message">{errors.weight}</span>
-                )}
-              </div>
-              <div className="form-group">
-                <label htmlFor="item-unit">Unité</label>
                 <select
                   id="item-unit"
                   value={weightUnit}
                   onChange={(e) => setWeightUnit(e.target.value as Weight['unit'])}
+                  className="mobile-input weight-unit"
                 >
                   <option value="g">g</option>
                   <option value="kg">kg</option>
@@ -177,29 +163,26 @@ export function NewItemModal({ onClose, onSave }: NewItemModalProps) {
                   <option value="l">l</option>
                 </select>
               </div>
+              {errors.weight && (
+                <span className="error-message">{errors.weight}</span>
+              )}
             </div>
           )}
 
-          <div className="form-group">
-            <label htmlFor="item-notes">Notes (optionnel)</label>
-            <textarea
-              id="item-notes"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              rows={2}
-            />
-          </div>
-
-          <div className="modal-actions">
+          <div className="modal-actions mobile-actions">
             <button 
               type="button" 
               onClick={onClose} 
-              className="btn btn-secondary"
+              className="btn btn-secondary mobile-btn"
             >
               Annuler
             </button>
-            <button type="submit" className="btn btn-primary">
-              Ajouter
+            <button 
+              type="submit" 
+              className="btn btn-primary mobile-btn"
+              disabled={!name.trim()}
+            >
+              ✅ Ajouter
             </button>
           </div>
         </form>

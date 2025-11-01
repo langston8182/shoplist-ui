@@ -19,18 +19,19 @@ export function Header({ onLogout }: HeaderProps) {
         <h1 className="header-title" onClick={handleTitleClick}>
           Shoplist
         </h1>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <div className="header-actions">
           {fullName && (
-            <span style={{ color: 'var(--color-text-secondary)', fontSize: '0.9375rem' }}>
-              Bonjour {fullName}
+            <span className="header-greeting">
+              Bonjour {fullName.split(' ')[0]}
             </span>
           )}
           <button
             onClick={onLogout}
-            className="btn btn-secondary"
+            className="btn btn-secondary header-logout-btn"
             aria-label="Se déconnecter"
           >
-            Déconnexion
+            <span className="logout-text">Déconnexion</span>
+            <span className="logout-icon">👋</span>
           </button>
         </div>
       </div>
