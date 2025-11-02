@@ -7,6 +7,7 @@ import type {
   UpdateItemRequest,
   ApiError,
 } from '../types/api';
+import { authService } from './auth.service';
 
 const BASE_URL = import.meta.env.VITE_API_URL;
 const AUTH_BASE_URL = import.meta.env.VITE_AUTH_BASE_URL;
@@ -15,7 +16,8 @@ const TIMEOUT = 10000;
 class ApiClient {
   private async fetchWithTimeout(
     url: string,
-    options: RequestInit = {}
+    options: RequestInit = {},
+    isRetry: boolean = false
   ): Promise<Response> {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), TIMEOUT);
@@ -33,7 +35,21 @@ class ApiClient {
 
       clearTimeout(timeoutId);
 
-      if (response.status === 401) {
+      if (response.status === 401 && !isRetry) {
+        // Essayer de refresher le token
+        const refreshSuccess = await authService.refreshToken();
+        
+        if (refreshSuccess) {
+          // Retry la requête originale avec le nouveau token
+          return this.fetchWithTimeout(url, options, true);
+        } else {
+          // Le refresh a échoué, rediriger vers le login
+          const returnTo = encodeURIComponent(window.location.href);
+          window.location.href = `${AUTH_BASE_URL}/auth/login?returnTo=${returnTo}`;
+          throw new Error('Non authentifié');
+        }
+      } else if (response.status === 401 && isRetry) {
+        // Déjà essayé de refresher, rediriger vers le login
         const returnTo = encodeURIComponent(window.location.href);
         window.location.href = `${AUTH_BASE_URL}/auth/login?returnTo=${returnTo}`;
         throw new Error('Non authentifié');

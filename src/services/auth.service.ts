@@ -11,7 +11,29 @@ export interface AuthMeResponse {
   profile?: UserProfile;
 }
 
+export interface RefreshResponse {
+  success: boolean;
+}
+
 class AuthService {
+  async refreshToken(): Promise<boolean> {
+    try {
+      const response = await fetch(`${AUTH_BASE_URL}/auth/refresh`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        return false;
+      }
+
+      const data: RefreshResponse = await response.json();
+      return data.success;
+    } catch (error) {
+      return false;
+    }
+  }
+
   async checkAuth(): Promise<AuthMeResponse> {
     try {
       const response = await fetch(`${AUTH_BASE_URL}/auth/me`, {
