@@ -1234,7 +1234,22 @@ select:focus-visible {
   z-index: 1;
 }
 
-.toggle-action-btn,
+.toggle-action-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  padding: var(--spacing-sm);
+  border-radius: var(--border-radius-sm);
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
 .delete-action-btn {
   background: none;
   border: none;
@@ -1262,13 +1277,20 @@ select:focus-visible {
   background-color: rgba(255, 255, 255, 0.2);
 }
 
-.toggle-icon,
+.toggle-icon {
+  font-size: 2rem;
+  animation: bounce 2s infinite;
+}
+
 .delete-icon {
   font-size: 1.25rem;
   animation: bounce 2s infinite;
 }
 
-.toggle-text,
+.toggle-text {
+  display: none;
+}
+
 .delete-text {
   font-size: 0.75rem;
   font-weight: 600;
@@ -1413,12 +1435,18 @@ select:focus-visible {
     display: none;
   }
 
-  .toggle-text,
+  .toggle-text {
+    display: none;
+  }
+
   .delete-text {
     font-size: 0.6875rem;
   }
 
-  .toggle-icon,
+  .toggle-icon {
+    font-size: 1.75rem;
+  }
+
   .delete-icon {
     font-size: 1.125rem;
   }
