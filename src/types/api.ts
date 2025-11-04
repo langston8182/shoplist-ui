@@ -47,3 +47,19 @@ export interface UpdateItemRequest {
 export interface ApiError {
   error: string;
 }
+
+export interface Article {
+  _id: string;
+  name: string;
+  usageCount: number;
+  score?: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ArticleSearchResponse {
+  articles: Article[];
+  query?: string;
+  total: number;
+  type: 'search' | 'popular';
+}

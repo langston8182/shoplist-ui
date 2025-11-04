@@ -6,6 +6,7 @@ import type {
   CreateItemRequest,
   UpdateItemRequest,
   ApiError,
+  ArticleSearchResponse,
 } from '../types/api';
 import { authService } from './auth.service';
 
@@ -161,6 +162,14 @@ class ApiClient {
       }
     );
     await this.handleResponse(response);
+  }
+
+  async searchArticles(query: string, limit = 20): Promise<ArticleSearchResponse> {
+    const encodedQuery = encodeURIComponent(query);
+    const response = await this.fetchWithTimeout(
+      `${BASE_URL}/articles/search?q=${encodedQuery}&limit=${limit}`
+    );
+    return this.handleResponse<ArticleSearchResponse>(response);
   }
 }
 

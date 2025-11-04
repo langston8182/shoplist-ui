@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { CreateItemRequest, Weight } from '../types/api';
+import { ArticleAutocomplete } from './ArticleAutocomplete';
 
 interface NewItemModalProps {
   onClose: () => void;
@@ -83,12 +84,10 @@ export function NewItemModal({ onClose, onSave }: NewItemModalProps) {
 
         <form onSubmit={handleSubmit} className="modal-content mobile-form">
           <div className="form-group">
-            <input
-              id="item-name"
-              type="text"
+            <ArticleAutocomplete
               value={name}
-              onChange={(e) => {
-                setName(e.target.value);
+              onChange={(value) => {
+                setName(value);
                 setErrors((prev) => ({ ...prev, name: '' }));
               }}
               className={`mobile-input ${errors.name ? 'input-error' : ''}`}

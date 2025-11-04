@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { CreateItemRequest, Weight } from '../types/api';
+import { ArticleAutocomplete } from './ArticleAutocomplete';
 
 interface NewItemFormProps {
   onAdd: (data: CreateItemRequest) => void;
@@ -75,15 +76,14 @@ export function NewItemForm({ onAdd }: NewItemFormProps) {
 
       <div className="form-group">
         <label htmlFor="item-name">Nom de l'article</label>
-        <input
-          id="item-name"
-          type="text"
+        <ArticleAutocomplete
           value={name}
-          onChange={(e) => {
-            setName(e.target.value);
+          onChange={(value) => {
+            setName(value);
             setErrors((prev) => ({ ...prev, name: '' }));
           }}
           className={errors.name ? 'input-error' : ''}
+          placeholder="Nom de l'article"
         />
         {errors.name && <span className="error-message">{errors.name}</span>}
       </div>
