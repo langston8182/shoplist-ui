@@ -36,19 +36,23 @@ class ApiClient {
       clearTimeout(timeoutId);
 
       if (response.status === 401 && !isRetry) {
+        console.log('🔒 [API] Erreur 401 détectée, tentative de refresh du token...');
         // Essayer de refresher le token
         const refreshSuccess = await authService.refreshToken();
         
         if (refreshSuccess) {
+          console.log('✅ [API] Token refreshé avec succès, retry de la requête');
           // Retry la requête originale avec le nouveau token
           return this.fetchWithTimeout(url, options, true);
         } else {
+          console.log('❌ [API] Échec du refresh token, redirection vers login');
           // Le refresh a échoué, rediriger vers le login
           const returnTo = encodeURIComponent(window.location.href);
           window.location.href = `${AUTH_BASE_URL}/auth/login?returnTo=${returnTo}`;
           throw new Error('Non authentifié');
         }
       } else if (response.status === 401 && isRetry) {
+        console.log('❌ [API] Erreur 401 après retry, redirection vers login');
         // Déjà essayé de refresher, rediriger vers le login
         const returnTo = encodeURIComponent(window.location.href);
         window.location.href = `${AUTH_BASE_URL}/auth/login?returnTo=${returnTo}`;

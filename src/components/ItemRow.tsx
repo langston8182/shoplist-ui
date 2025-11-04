@@ -62,13 +62,14 @@ export function ItemRow({
     setIsDragging(false);
     
     if (Math.abs(translateX) > SWIPE_THRESHOLD) {
-      // Swipe confirmé - afficher l'action correspondante
+      // Swipe confirmé
       if (translateX < 0) {
+        // Swipe gauche = supprimer (afficher l'action de suppression)
         setTranslateX(-120);
         setShowAction('delete');
       } else {
-        setTranslateX(120);
-        setShowAction('toggle');
+        // Swipe droite = toggle acheté (exécuter l'action directement)
+        handleToggle();
       }
     } else {
       // Swipe insuffisant - revenir à la position normale

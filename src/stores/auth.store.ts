@@ -5,11 +5,13 @@ class AuthStore {
   private authenticated: boolean = false;
 
   setUser(profile: UserProfile): void {
+    console.log('👤 [AUTH STORE] Utilisateur connecté:', profile.email);
     this.user = profile;
     this.authenticated = true;
   }
 
   clearUser(): void {
+    console.log('👤 [AUTH STORE] Utilisateur déconnecté');
     this.user = null;
     this.authenticated = false;
   }
